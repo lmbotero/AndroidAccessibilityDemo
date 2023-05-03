@@ -11,22 +11,23 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.AccessibilityDelegateCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.globant.accessibilitydemo.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private val mHotelSearchHistory = mutableListOf(
-        HotelSearchItem(1, R.drawable.hotel, "Grand Plaza Hotel", "2023/01/31"),
-        HotelSearchItem(2, R.drawable.hotel, "Park Avenue Hotel", "2023/02/14"),
-        HotelSearchItem(3, R.drawable.hotel, "Sunset Beach Hotel", "2023/03/09"),
-        HotelSearchItem(4, R.drawable.hotel, "Regency Inn", "2023/04/06"),
-        HotelSearchItem(5, R.drawable.hotel, "Mountain View Lodge", "2023/05/01"),
-        HotelSearchItem(6, R.drawable.hotel, "Seaside Resort", "2023/05/20")
+        HotelSearchItem(R.drawable.hotel, "Grand Plaza Hotel", "2023/01/31"),
+        HotelSearchItem(R.drawable.hotel, "Park Avenue Hotel", "2023/02/14"),
+        HotelSearchItem(R.drawable.hotel, "Sunset Beach Hotel", "2023/03/09"),
+        HotelSearchItem(R.drawable.hotel, "Regency Inn", "2023/04/06"),
+        HotelSearchItem(R.drawable.hotel, "Mountain View Lodge", "2023/05/01"),
+        HotelSearchItem(R.drawable.hotel, "Seaside Resort", "2023/05/20")
     )
 
     private lateinit var mMoodViews: List<ImageView>
-    lateinit var adapter: HotelSearchAdapter
+    lateinit var adapterSearchHistory: HotelSearchAdapter
 
     lateinit var binding: ActivityMainBinding
 
@@ -50,13 +51,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpViews() {
-        adapter = HotelSearchAdapter(mHotelSearchHistory)
-        adapter.setHasStableIds(true)
+        adapterSearchHistory = HotelSearchAdapter()
+        binding.recyclerviewSearchHistory.adapter = adapterSearchHistory
+        binding.recyclerviewSearchHistory.layoutManager = LinearLayoutManager(this)
 
-        binding.recyclerviewSearchHistory.setHasFixedSize(true)
-        binding.recyclerviewSearchHistory.adapter = adapter
-        binding.recyclerviewSearchHistory.layoutManager =
-            LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        adapterSearchHistory.addItems(mHotelSearchHistory)
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.bindingAdapterPosition
+
+                adapterSearchHistory.removeSearchItemFromHistory(position)
+            }
+        }).attachToRecyclerView(binding.recyclerviewSearchHistory)
     }
 
     private fun setUpListeners() {
@@ -161,11 +176,6 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
             })
-    }
-
-    private fun deleteItemHistory(position: Int) {
-        mHotelSearchHistory.removeAt(position)
-        adapter.notifyItemRemoved(position)
     }
 
     private fun ImageView.changeMoodImage(context: Context, isSelected: Boolean) {
