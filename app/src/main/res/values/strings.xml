@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Demo Host</string>
+    <string name="hotel_search_box_content_description">Hotel search box</string>
+    <string name="search_destination_hint">Where do you want to travel</string>
+    <string name="search_button">SEARCH</string>
+    <string name="reservation_rating_title">How was your experience in your last reservation?</string>
+    <string name="hotel_photo_content_description">Golden Tulip Hotel</string>
+    <string name="hotel_name">Golden Tulip Hotel</string>
+    <string name="hotel_reservation_date">2023/02/05</string>
+    <string name="poor_content_description">Poor</string>
+    <string name="average_content_description">Average</string>
+    <string name="good_content_description">Good</string>
+    <string name="excellent_content_description">Excellent</string>
+    <string name="last_searches_title">Your last searches:</string>
+</resources>
